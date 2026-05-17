@@ -1,4 +1,5 @@
 import allure
+import requests
 
 
 class Endpoint():
@@ -15,7 +16,8 @@ class Endpoint():
     @allure.step("Check status code")
     def check_response_status_code(self, expected_status_code):
         assert self.response.status_code == expected_status_code, (
-            f"Status code is not {expected_status_code}"
+            f"Status code is not {expected_status_code}. "
+            f"But, status code is {self.response.status_code}"
         )
 
     @allure.step("Check that text is the same as sent")
@@ -49,3 +51,11 @@ class Endpoint():
         assert (
             str(self.response_json["id"]) == str(meme_id)
         ), "No meme exists with that id"
+
+    def request_without_aut_token(self, method, url_path, payload):
+        self.response = requests.request(
+            method=method,
+            url=f"{self.base_url}/{url_path}",
+            json=payload,
+        )
+        return self.response

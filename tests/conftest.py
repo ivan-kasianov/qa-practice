@@ -9,13 +9,14 @@ from endpoints.delete_meme import DeleteMeme
 from endpoints.get_meme import GetMeme
 from endpoints.get_memes import GetMemes
 from endpoints.update_meme import UpdateMeme
+from endpoints.endpoint import Endpoint
 
 load_dotenv()
 
 
 @pytest.fixture
 def payload():
-    return ({
+    return {
         "text": "pepe_hacker",
         "url": "https://img.artpal.com/746703/1-24-3-11-6-12-29m.jpg",
         "tags": ["hacker", "qa"],
@@ -23,7 +24,7 @@ def payload():
             "colors": ["green", "black", "pink"],
             "objects": ["computer", "frog"]
         }
-    })
+    }
 
 
 @pytest.fixture
@@ -57,18 +58,18 @@ def payload_for_get_meme():
     }
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def auth_endpoint():
     return Authorize()
 
 
-@pytest.fixture
+@pytest.fixture(scope="session")
 def auth_token(auth_endpoint):
     user = os.getenv("AUTH_NAME")
     user_payload = {"name": user}
     token = auth_endpoint.get_token_from_file()
     if token is None:
-        token = auth_endpoint.write_token_to_file(user_payload)
+        token = auth_endpoint.authorize_and_write_token_to_file(user_payload)
     return token
 
 
@@ -107,3 +108,8 @@ def get_all_memes_endpoint(auth_token):
 @pytest.fixture
 def update_meme_endpoint(auth_token):
     return UpdateMeme(token=auth_token)
+
+
+@pytest.fixture
+def base_endpoint():
+    return Endpoint(token=None)

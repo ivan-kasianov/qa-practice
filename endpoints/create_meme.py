@@ -5,10 +5,6 @@ from endpoints.endpoint import Endpoint
 
 
 class CreateMeme(Endpoint):
-    def __init__(self, token):
-        super().__init__(token)
-        self.url = f"{self.base_url}/meme"
-
     @allure.step("Create new meme")
     def create_new_meme(self, payload):
         self.response = requests.post(
