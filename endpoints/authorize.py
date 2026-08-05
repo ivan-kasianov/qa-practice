@@ -1,5 +1,6 @@
 import requests
 import allure
+import os
 
 
 from endpoints.endpoint import Endpoint
@@ -30,10 +31,14 @@ class Authorize(Endpoint):
         return self.response.status_code
 
     def get_token_from_file(self):
+        if not os.path.exists(".token"):
+            return None
+
         with open(".token", "r") as file:
-            token = file.read()
+            token = file.read().strip()
             if self.get_authorize(token) == 200:
                 return token
+        return None
 
     def authorize_and_write_token_to_file(self, user):
         token = self.post_authorize(user)
