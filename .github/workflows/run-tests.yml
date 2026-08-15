@@ -54,7 +54,7 @@ jobs:
         uses: actions/upload-artifact@v7
         with:
           name: allure-report
-          path: allure0report
+          path: allure-report
           retention-days: 1
           
         
