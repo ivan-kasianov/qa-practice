@@ -1,1 +1,43 @@
+name: Python autotests
 
+on: 
+  workflow_dispatch: 
+    inputs:
+      deployment_target:
+        description: choosу tests set
+        required: true
+        type: choice
+        default: smoke
+        options:
+          - smoke
+          - regression
+          - extended
+          - all
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+    name: Run autotests
+    steps:
+      - name: Checkout autotests
+        uses: actions/checkout@v7
+      - name: Set up Python environment
+        uses: actions/setup-python@v7
+        with:
+          python-version: '3.13' 
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+      - name: run all tests
+        if: "github.event.inputs.deployment_target == 'all'"
+        run: pytest
+      - name: run smoke tests
+        if: "github.event.inputs.deployment_target == 'smoke'"
+        run: pytest -m smoke
+      - name: run regression tests
+        if: "github.event.inputs.deployment_target == 'regression'"
+        run: pytest -m regression
+      - name: run extended tests
+        if: "github.event.inputs.deployment_target == 'extended'"
+        run: pytest -m extended
+
+        
