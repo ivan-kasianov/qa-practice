@@ -18,6 +18,8 @@ jobs:
   run-tests:
     runs-on: ubuntu-latest
     name: Run autotests
+    env:
+      AUTH_NAME: ${{ secrets.AUTH_NAME }}
     steps:
       - name: Checkout autotests
         uses: actions/checkout@v7
